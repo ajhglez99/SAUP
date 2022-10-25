@@ -21,7 +21,7 @@ def class_asigner(values):
     class_list = []
 
     for value in values:
-        class_value = math.ceil(value * 4)
+        class_value = math.floor(value * 4.9999) +1
         class_list.append(class_value)
 
     return class_list
