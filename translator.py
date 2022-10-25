@@ -1,12 +1,9 @@
 from deep_translator import GoogleTranslator
 import pandas as pd
-import dataset_setup
 
 def translate_reviews():
     df = pd.read_csv('./datasets/reviews.csv')
     df.head()
-
-    dataset_setup.clean_data(df)
 
     df['Title'] = df['Title'].apply(lambda title: GoogleTranslator(
         source='es', target='en').translate(title))
