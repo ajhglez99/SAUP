@@ -14,28 +14,47 @@ def dataset_with_rating():
     #save file
     writer = pd.ExcelWriter('./datasets/dataset_rating.xlsx')
     df_reorder.to_excel(writer, index = False)
-    writer.save()
-    
+    writer.save()    
 
-def compare_rating_with_sa():
-    df = pd.read_csv('./datasets/dataset.csv')
+def compare_rating_with_sa(df):
+    #df = pd.read_csv('./datasets/dataset.csv')
     df.head()
 
     df['Compare'] = df.apply(
         lambda x: abs(int(x['Rating'])/10 - int(x['Polarity'])), axis = 1)
     df.head()
 
-    del df['Compound']
-    del df['Date']
-    del df['Opinion']
-    del df['Score']
-    del df['Attraction']
+    # del df['Compound']
+    # del df['Date']
+    # del df['Opinion']
+    # del df['Score']
+    # del df['Attraction']
 
     #save file
-    writer = pd.ExcelWriter('./datasets/dataset_test.xlsx')
-    df.to_excel(writer, index = False)
+    # writer = pd.ExcelWriter('./datasets/dataset_test.xlsx')
+    # df.to_excel(writer, index = False)
+    # writer.save()
+
+    return df
+
+def dataset_rebuilt():
+    df = pd.read_csv('./datasets/dataset.csv')
+    df.head()
+
+    df = compare_rating_with_sa(df)
+    df_new = df[(df.Compare == 0)] 
+
+    # rearrange columns
+    df_reorder = df_new[['Title', 'Opinion', 'Polarity', 'Attraction']]
+
+    #save file
+    writer = pd.ExcelWriter('./datasets/dataset_rebuilt.xlsx')
+    df_reorder.to_excel(writer, index = False)
     writer.save()
 
-#compare_rating_with_sa()
+if __name__ == "__main__":
+    #compare_rating_with_sa()
 
-dataset_with_rating()
+    #dataset_with_rating()
+
+    dataset_rebuilt()
