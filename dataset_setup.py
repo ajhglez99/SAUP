@@ -8,7 +8,7 @@ def clean_data(df):
 
     blanks = []  # start with an empty list
 
-    for i,date,rating,title,opinion,attraction in df.itertuples():
+    for i,user,title,opinion,date in df.itertuples():
         if type(opinion) == str:
             if opinion.isspace():
                 blanks.append(i)
@@ -29,7 +29,7 @@ def dataset_setup():
     """Preprosess the dataset for Rest_mex_DL_EDA algorithm"""
     
     sid = SentimentIntensityAnalyzer()
-    df = pd.read_csv('./datasets/reviews.csv')
+    df = pd.read_csv('./datasets/database.csv')
     df.head()
 
     clean_data(df)
