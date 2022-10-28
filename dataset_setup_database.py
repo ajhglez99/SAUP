@@ -15,6 +15,12 @@ def clean_data(df):
 
     df.drop(blanks, inplace=True)
 
+def set_polarity(opinion):
+    try:
+        return sid.polarity_scores(opinion)
+    except:
+        return 0
+
 def class_asigner(values):
     """Asign a class between 1 and 5 to each value"""
     class_list = []
@@ -38,7 +44,7 @@ def dataset_setup():
     df['Full Opinion'] = df.Title + ' ' + df.Opinion
     df.head()
 
-    df['Score'] = df['Full Opinion'].apply(lambda opinion: sid.polarity_scores(opinion))
+    df['Score'] = df['Full Opinion'].apply(lambda opinion: set_polarity())
     df.head()
     
     df['Compound'] = df['Score'].apply(lambda score_dict: score_dict['compound'])
