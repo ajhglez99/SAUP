@@ -52,5 +52,22 @@ def dataset_rebuilt():
     df_reorder.to_excel(writer, index = False)
     writer.save()
 
+def dataset_rebuilt_2():
+    df = pd.read_csv('./datasets/dataset.csv')
+    df.head()
+
+    df = compare_rating_with_sa(df)
+
+    df['Polarity'] = df.apply(lambda x: round(((x['Rating'])/10 + x['Polarity'])/2), axis = 1)
+    df.head()
+
+    # rearrange columns
+    df_reorder = df[['Title', 'Opinion', 'Polarity', 'Attraction']]
+
+    #save file
+    writer = pd.ExcelWriter('./datasets/dataset_rebuilt_2.xlsx')
+    df_reorder.to_excel(writer, index = False)
+    writer.save()
+
 if __name__ == "__main__":
-    dataset_rebuilt()
+    dataset_rebuilt_2()
