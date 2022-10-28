@@ -1,5 +1,5 @@
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-import pandas as pd
+import csv
 
 def clean_data(df):
     """Remove NaN values and empty strings"""
@@ -15,54 +15,38 @@ def clean_data(df):
 
     df.drop(blanks, inplace=True)
 
-def set_polarity(opinion):
-    try:
-        return sid.polarity_scores(opinion)
-    except:
-        return 0
-
-def class_asigner(values):
+def class_asigner(value):
     """Asign a class between 1 and 5 to each value"""
-    class_list = []
+    class_value = round(value * 2.4999) + 3
 
-    for value in values:
-        class_value = round(value * 2.4999) + 3
-        class_list.append(class_value)
-
-    return class_list
+    return class_value
 
 def dataset_setup():
     """Preprosess the dataset for Rest_mex_DL_EDA algorithm"""
     
     sid = SentimentIntensityAnalyzer()
-    df = pd.read_csv('/content/SAUP/datasets/database.csv')
-    df.head()
 
-    clean_data(df)
+    with open('./datasets/database.csv', 'r', encoding="utf-8") as file_obj:
+        reader = csv.reader(file_obj)
+        row_list = list(reader)
 
-    #calculate polarity
-    df['Full Opinion'] = df.Title + ' ' + df.Opinion
-    df.head()
+        for row in row_list:
+            if row == row_list[0]:
+                row_list[0].append('Polarity')
+            else:
+                try:
+                    score = sid.polarity_scores(row[1] + ' ' + row[2])
+                    polarity = class_asigner(score['compound'])
+                    row.append(polarity)
+                except:
+                    row.append(-1000)
+                    print("wtf!???")
 
-    df['Score'] = df['Full Opinion'].apply(lambda opinion: set_polarity())
-    df.head()
-    
-    df['Compound'] = df['Score'].apply(lambda score_dict: score_dict['compound'])
-    df.head()
+    with open('./datasets/dataset_2.csv', 'a', encoding="utf-8") as file_obj:
+        writer = csv.writer(file_obj, lineterminator='\n')
 
-    df['Polarity'] = class_asigner(df['Compound'])
-    df.head()
-
-    #save file for analyzis purpose with extra data
-    df.to_csv('/content/SAUP/datasets/dataset.csv', index = False)
-
-    # rearrange columns
-    df_reorder = df[['Title', 'Opinion', 'Polarity']]
-
-    #save file
-    writer = pd.ExcelWriter('/content/SAUP/datasets/dataset.xlsx')
-    df_reorder.to_excel(writer, index = False)
-    writer.save()
+        for row in row_list:
+            writer.writerow(row)
 
 if __name__ == "__main__":
     dataset_setup()
