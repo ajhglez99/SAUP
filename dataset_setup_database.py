@@ -29,7 +29,7 @@ def dataset_setup():
     """Preprosess the dataset for Rest_mex_DL_EDA algorithm"""
     
     sid = SentimentIntensityAnalyzer()
-    df = pd.read_csv('content/SAUP/datasets/database.csv')
+    df = pd.read_csv('/content/SAUP/datasets/database.csv')
     df.head()
 
     clean_data(df)
@@ -54,7 +54,7 @@ def dataset_setup():
     df_reorder = df[['Title', 'Opinion', 'Polarity']]
 
     #save file
-    writer = pd.ExcelWriter('content/SAUP/datasets/dataset.xlsx')
+    writer = pd.ExcelWriter('/content/SAUP/datasets/dataset.xlsx')
     df_reorder.to_excel(writer, index = False)
     writer.save()
 
